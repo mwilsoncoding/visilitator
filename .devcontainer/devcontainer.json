@@ -1,0 +1,46 @@
+{
+  "name": "Dev",
+  //"build":{
+  //  "dockerfile": "Dockerfile",
+  //  "context": ".."
+  //},
+
+  "dockerComposeFile": "docker-compose.yaml",
+  "service": "dev",
+  "workspaceFolder": "/workspace",
+  "shutdownAction": "stopCompose",
+
+  "settings": {
+    "terminal.integrated.defaultProfile.linux": "bash"
+  },
+
+  "forwardPorts": [],
+
+  // Install local package manager caches if missing (see above note re: COPY . $APP_DIR)
+  // Get dependencies for the currently configured environment
+  "postCreateCommand": "mix do local.hex --force --if-missing, local.rebar --force --if-missing, deps.get --only $MIX_ENV",
+
+
+  "remoteUser": "dev",
+
+  "extensions": [
+	"editorconfig.editorconfig",
+	"github.vscode-pull-request-github",
+	"redhat.vscode-yaml",
+	"ms-azuretools.vscode-docker",
+  "jakebecker.elixir-ls"
+  ],
+
+  // Configure tool-specific properties.
+  "customizations": {
+    // Configure properties specific to VS Code.
+    "vscode": {
+      "settings": {
+        "elixirLS.envVariables": {
+          "ELIXIR_VSN": "1.14.0"
+        }
+      }
+    }
+  }
+
+}

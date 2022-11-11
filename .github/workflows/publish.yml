@@ -1,0 +1,108 @@
+---
+name: Publish
+on:
+  push:
+    branches: [main]
+env:
+  BUILDER_BASE_IMAGE: elixir
+  RUNNER_BASE_IMAGE: elixir
+  BUILDER_BASE_IMAGE_REGISTRY: docker.io
+  BUILDER_BASE_IMAGE_REGISTRY_PATH: library
+  RUNNER_BASE_IMAGE_REGISTRY: docker.io
+  RUNNER_BASE_IMAGE_REGISTRY_PATH: library
+jobs:
+  build-cache:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        build-env:
+          - dev
+          - test
+          - prod
+        builder-base-image-vsn:
+          - 1.14.0
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        id: buildx
+        with:
+          install: true
+          driver: docker
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/cache@v3
+        id: cache
+        with:
+          # Cache deps, build, and package mgr dirs
+          path: |
+            deps
+            _build
+            .hex
+            .mix
+            .cache
+
+          # Cache based on OS, BUILD_ENV, LANG, LANG_VSN, and hashFiles('**/lang.lock')
+          # The default branch should cache the same without the hash for a restore
+          # from latest merge to the default branch
+          key: ${{ matrix.build-env }}-${{ matrix.builder-base-image-vsn }}
+      - name: Update Cache
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          docker build . \
+            --tag ghcr.io/${{ github.repository }}/container-dev-builder:${{ matrix.build-env }}-${{ matrix.builder-base-image-vsn }}-${{ github.sha }} \
+            --target builder \
+            --build-arg BUILDER_REGISTRY=${{ env.BUILDER_BASE_IMAGE_REGISTRY }} \
+            --build-arg BUILDER_REGISTRY_PATH=${{ env.BUILDER_BASE_IMAGE_REGISTRY_PATH }} \
+            --build-arg BUILDER_BASE_IMAGE=${{ env.BUILDER_BASE_IMAGE }} \
+            --build-arg BUILDER_BASE_IMAGE_TAG=${{ matrix.builder-base-image-vsn }}-alpine \
+            --build-arg MIX_ENV=${{ matrix.build-env }} \
+            --build-arg ELIXIR_VSN=${{ matrix.builder-base-image-vsn }}
+          docker container create --name cache ghcr.io/${{ github.repository }}/container-dev-builder:${{ matrix.build-env }}-${{ matrix.builder-base-image-vsn }}-${{ github.sha }}
+          docker container cp cache:/opt/app/deps .
+          docker container cp cache:/opt/app/_build .
+          docker container cp cache:/opt/app/.mix .
+          docker container cp cache:/opt/app/.hex .
+          docker container cp cache:/opt/app/.cache .
+  build-publish:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        build-env:
+          - prod
+        base-image-vsn:
+          - 1.14.0
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        id: buildx
+        with:
+          install: true
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and Push the Docker image
+        uses: docker/build-push-action@v3
+        with:
+          push: true
+          tags: ghcr.io/${{ github.repository }}/container:${{ github.sha }}
+          context: .
+          build-args: |-
+            BUILDER_REGISTRY=${{ env.BUILDER_BASE_IMAGE_REGISTRY }}
+            BUILDER_REGISTRY_PATH=${{ env.BUILDER_BASE_IMAGE_REGISTRY_PATH }}
+            BUILDER_BASE_IMAGE=${{ env.BUILDER_BASE_IMAGE }}
+            BUILDER_BASE_IMAGE_TAG=${{ matrix.base-image-vsn }}-alpine
+            RUNNER_REGISTRY=${{ env.RUNNER_BASE_IMAGE_REGISTRY }}
+            RUNNER_REGISTRY_PATH=${{ env.RUNNER_BASE_IMAGE_REGISTRY_PATH }}
+            RUNNER_BASE_IMAGE=${{ env.RUNNER_BASE_IMAGE }}
+            RUNNER_BASE_IMAGE_TAG=${{ matrix.base-image-vsn }}-alpine
+            MIX_ENV=${{ matrix.build-env }}
+            ELIXIR_VSN=${{ matrix.base-image-vsn }}

@@ -1,0 +1,19 @@
+/tmp
+/_build
+/deps
+/doc
+/cover
+/.fetch
+erl_crash.dump
+*.ez
+*.beam
+/config/*.secret.exs
+elixir_dev-*.tar
+
+# Ignore anything VSCode populates for plugins
+.elixir_ls/
+
+# Ignore  or package manager cache directories
+/.mix
+/.hex
+/.cach
