@@ -12,8 +12,6 @@ defmodule VisilitatorTest do
     assert :ets.info(:users) |> Keyword.fetch!(:size) == 0
     assert Visilitator.create_account(first_name, last_name, email) == :ok
     assert :ets.info(:users) |> Keyword.fetch!(:size) == 1
-
-    clear_tables()
   end
 
   test "requests a visit" do
@@ -30,8 +28,6 @@ defmodule VisilitatorTest do
 
     debited_mins = member.balance - minutes
     assert User.lookup(member.id).balance == debited_mins
-
-    clear_tables()
   end
 
   test "stops requests from members with a 0 balance of minutes" do
@@ -48,8 +44,6 @@ defmodule VisilitatorTest do
            ) == :function_clause
 
     assert :ets.info(:visits) |> Keyword.fetch!(:size) == 1
-
-    clear_tables()
   end
 
   test "stops members from requesting minutes beyond their balance" do
@@ -63,8 +57,6 @@ defmodule VisilitatorTest do
            ) == :function_clause
 
     assert :ets.info(:visits) |> Keyword.fetch!(:size) == 0
-
-    clear_tables()
   end
 
   test "fulfills a visit" do
@@ -84,10 +76,16 @@ defmodule VisilitatorTest do
     Visilitator.fulfill_visit(pal.id, visit.id)
     assert :ets.info(:transactions) |> Keyword.fetch!(:size) == 1
 
-    credited_mins = pal.balance + trunc(0.85 * visit.minutes)
-    assert User.lookup(pal.id).balance == credited_mins
+    overhead_percent =
+      Application.fetch_env!(:visilitator, Visilitator.User)
+      |> Keyword.fetch!(:fulfillment_overhead_percentage)
 
-    clear_tables()
+    credited_mins = pal.balance + trunc(visit.minutes - visit.minutes * overhead_percent)
+    assert User.lookup(pal.id).balance == credited_mins
+  end
+
+  setup do
+    on_exit(&clear_tables/0)
   end
 
   defp clear_tables() do
