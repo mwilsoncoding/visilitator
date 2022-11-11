@@ -54,7 +54,7 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
           docker build . \
-            --tag ghcr.io/${{ github.repository }}/container-dev-builder:${{ matrix.build-env }}-${{ matrix.builder-base-image-vsn }}-${{ github.sha }} \
+            --tag ghcr.io/${{ github.repository }}/visilitator-builder:${{ matrix.build-env }}-${{ matrix.builder-base-image-vsn }}-${{ github.sha }} \
             --target builder \
             --build-arg BUILDER_REGISTRY=${{ env.BUILDER_BASE_IMAGE_REGISTRY }} \
             --build-arg BUILDER_REGISTRY_PATH=${{ env.BUILDER_BASE_IMAGE_REGISTRY_PATH }} \
@@ -62,7 +62,7 @@ jobs:
             --build-arg BUILDER_BASE_IMAGE_TAG=${{ matrix.builder-base-image-vsn }}-alpine \
             --build-arg MIX_ENV=${{ matrix.build-env }} \
             --build-arg ELIXIR_VSN=${{ matrix.builder-base-image-vsn }}
-          docker container create --name cache ghcr.io/${{ github.repository }}/container-dev-builder:${{ matrix.build-env }}-${{ matrix.builder-base-image-vsn }}-${{ github.sha }}
+          docker container create --name cache ghcr.io/${{ github.repository }}/visilitator-builder:${{ matrix.build-env }}-${{ matrix.builder-base-image-vsn }}-${{ github.sha }}
           docker container cp cache:/opt/app/deps .
           docker container cp cache:/opt/app/_build .
           docker container cp cache:/opt/app/.mix .
@@ -93,7 +93,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: ghcr.io/${{ github.repository }}/container:${{ github.sha }}
+          tags: ghcr.io/${{ github.repository }}/visilitator:${{ github.sha }}
           context: .
           build-args: |-
             BUILDER_REGISTRY=${{ env.BUILDER_BASE_IMAGE_REGISTRY }}
