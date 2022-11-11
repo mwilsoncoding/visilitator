@@ -11,7 +11,7 @@ defmodule Visilitator.Application do
     :ets.new(:transactions, [:named_table, :public])
 
     children = [
-      Visilitator.Repo,
+      Visilitator.Repo
     ]
 
     opts = [strategy: :one_for_one, name: Visilitator.Supervisor]
