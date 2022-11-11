@@ -10,7 +10,9 @@ defmodule Visilitator.Application do
     :ets.new(:visits, [:named_table, :public])
     :ets.new(:transactions, [:named_table, :public])
 
-    children = []
+    children = [
+      Visilitator.Repo
+    ]
 
     opts = [strategy: :one_for_one, name: Visilitator.Supervisor]
     Supervisor.start_link(children, opts)
