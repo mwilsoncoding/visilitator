@@ -1,5 +1,5 @@
 # Set language-specific versioning
-ARG ELIXIR_VSN=1.14.0
+ARG ELIXIR_VSN=1.14.1
 
 # Set args for image overrides
 ARG BUILDER_REGISTRY=docker.io
@@ -18,7 +18,7 @@ ARG APP_DIR=/opt/app
 ARG MIX_ENV=prod
 
 # Set any other args shared between build stages
-ARG OTP_APP=elixir_dev
+ARG OTP_APP=visilitator
 
 # Build stage
 FROM ${BUILDER_REGISTRY}/${BUILDER_REGISTRY_PATH}/${BUILDER_BASE_IMAGE}:${BUILDER_BASE_IMAGE_TAG} AS builder
@@ -82,4 +82,4 @@ ENV MIX_ENV $MIX_ENV
 WORKDIR $BUILD_DIR/$MIX_ENV/rel/$OTP_APP/bin
 
 # Use CMD to allow overrides when invoked via `docker container run`
-CMD ["./elixir_dev","start"]
+CMD ["./visilitator","start"]

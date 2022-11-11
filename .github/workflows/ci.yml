@@ -7,9 +7,6 @@ env:
   BUILDER_BASE_IMAGE: elixir
   BUILDER_BASE_IMAGE_REGISTRY: docker.io
   BUILDER_BASE_IMAGE_REGISTRY_PATH: library
-  # Google Artifact Registry Example:
-  # BUILDER_BASE_IMAGE_REGISTRY: us-docker.pkg.dev
-  # BUILDER_BASE_IMAGE_REGISTRY_PATH: $PROJECT_ID/$PATH
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -20,7 +17,7 @@ jobs:
           - test
           - prod
         builder-base-image-vsn:
-          - 1.14.0
+          - 1.14.1
     steps:
       - uses: actions/checkout@v3
       - name: Set up Docker Buildx
@@ -66,7 +63,7 @@ jobs:
             BUILDER_BASE_IMAGE=${{ env.BUILDER_BASE_IMAGE }}
             BUILDER_BASE_IMAGE_TAG=${{ matrix.builder-base-image-vsn }}-alpine
             MIX_ENV=${{ matrix.build-env }}
-            ELIXIR_VERSION=${{ matrix.builder-base-image-vsn }}
+            ELIXIR_VSN=${{ matrix.builder-base-image-vsn }}
       - name: Copy Docker Contents to Host
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
@@ -83,7 +80,7 @@ jobs:
         build-env:
           - dev
         builder-base-image-vsn:
-          - 1.14.0
+          - 1.14.1
     steps:
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
@@ -101,7 +98,7 @@ jobs:
         build-env:
           - dev
         builder-base-image-vsn:
-          - 1.14.0
+          - 1.14.1
     steps:
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
@@ -119,7 +116,7 @@ jobs:
         build-env:
           - test
         builder-base-image-vsn:
-          - 1.14.0
+          - 1.14.1
     steps:
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
@@ -137,7 +134,7 @@ jobs:
         build-env:
           - dev
         builder-base-image-vsn:
-          - 1.14.0
+          - 1.14.1
     steps:
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
@@ -155,7 +152,7 @@ jobs:
         build-env:
           - dev
         builder-base-image-vsn:
-          - 1.14.0
+          - 1.14.1
     steps:
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
