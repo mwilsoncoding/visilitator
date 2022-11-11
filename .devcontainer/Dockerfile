@@ -1,6 +1,6 @@
 # Select a base image for developing your language
 # Alpine images are preferred
-ARG ELIXIR_VSN=1.14.0
+ARG ELIXIR_VSN=1.14.1
 ARG BUILDER_REGISTRY=docker.io
 ARG BUILDER_REGISTRY_PATH=library
 ARG BUILDER_BASE_IMAGE=elixir
@@ -26,7 +26,6 @@ ENV REBAR_CACHE_DIR $WORKSPACE/.cache
 
 # Set an ENV to persist the app build env as development mode
 ENV MIX_ENV dev
-ENV ELIXIR_VSN $ELIXIR_VSN
 
 # This Dockerfile adds a non-root user with sudo access. Use the "remoteUser"
 # property in devcontainer.json to use it. On Linux, the container user's GID/UIDs

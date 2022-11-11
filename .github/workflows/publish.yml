@@ -20,7 +20,7 @@ jobs:
           - test
           - prod
         builder-base-image-vsn:
-          - 1.14.0
+          - 1.14.1
     steps:
       - uses: actions/checkout@v3
       - name: Set up Docker Buildx
@@ -75,7 +75,7 @@ jobs:
         build-env:
           - prod
         base-image-vsn:
-          - 1.14.0
+          - 1.14.1
     steps:
       - uses: actions/checkout@v3
       - name: Set up Docker Buildx

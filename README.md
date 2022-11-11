@@ -1,28 +1,55 @@
-# container-dev-elixir
+# Visilitator
 
-An opinionated starting point for containerized development in Elixir.
+The Visit Facilitator!
 
-## How to Use
+## Running
 
-- Follow [the official instructions](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template) on creating a new repo from a template.
-- Modify new repository settings accordingly
+From the prompt:
+> This application may be command-line or API-only. It does not require a graphical or web interface.
 
+Steps for running and interacting with this repository (copy/paste-able):
+
+- Clone the repository
 ```console
-# After creating $MY_NEW_REPO from this template
-git clone $MY_NEW_REPO
+git clone 
 ```
+- Navigate to the root of the repository
 ```console
-cd $MY_NEW_REPO
+cd visilitator
 ```
+- Build an OCI image with the `--target` set to `builder` to compile the code with access to `mix` and `iex`
 ```console
-docker run \
-  --rm \
-  -it \
-  -v $(pwd):/workspace \
-  -w /workspace \
-  --entrypoint sh
-  -e OTP_APP=my_app \
-  -e MODULE=MyApp \
-  alpine:latest \
-  -c 'sed -i -e "s/elixir_dev/${OTP_APP}/g" .gitignore mix.exs && sed -i -e "s/ElixirDev/${MODULE}/g" lib/elixir_dev.ex test/elixir_dev_test.exs mix.exs && mv ./lib/elixir_dev.ex ./lib/${OTP_APP}.ex && mv ./test/elixir_dev_test.exs ./test/${OTP_APP}_test.exs'
+docker build -t visilitator-builder --target builder .
 ```
+- Run tests
+```console
+docker run --rm -it visilitator-builder mix test
+```
+- Run code in `iex`
+```console
+docker run --rm -it visilitator-builder iex -S mix
+```
+  - Create a member user
+  ```console
+  iex(1)> Visilitator.create_account("bobby", "tables", "bobby.tables@gmail.com")
+  Your user ID is: 658d9e5a-39d3-483e-9721-f4ae5df507b1
+  :ok
+  ```
+  - Request a visit
+  ```console
+  iex(2)> Visilitator.request_visit("658d9e5a-39d3-483e-9721-f4ae5df507b1", "01-01-2023", 30, ["talk", "laundry"])
+  Your visit ID is: efb1be2d-676f-4353-851e-71b37e0506a7
+  :ok
+  ```
+  - Create a pal user
+  ```console
+  iex(3)> Visilitator.create_account("port", "monteau", "wordplay@yahoo.biz")    
+  Your user ID is: c11b5228-c667-4295-b6e2-f8dae75372ef
+  :ok
+  ```
+  - Fulfill a visit
+  ```console
+  iex(4)> Visilitator.fulfill_visit("c11b5228-c667-4295-b6e2-f8dae75372ef", "efb1be2d-676f-4353-851e-71b37e0506a7")
+  Your transaction ID is: 6ffe01c0-c3a7-4b07-a184-216b4d72e84d
+  :ok
+  ```
