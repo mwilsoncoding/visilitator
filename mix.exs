@@ -24,7 +24,9 @@ defmodule Visilitator.MixProject do
     [
       {:uuid, "~> 1.1"},
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false}
+      {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
+      {:ecto_sql, "~> 3.9"},
+      {:postgrex, "~> 0.16.5"}
     ]
   end
 end
