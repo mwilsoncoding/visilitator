@@ -50,7 +50,13 @@ defmodule Visilitator.User do
   """
   @spec fulfill(t(), pos_integer()) :: true
   def fulfill(user = %__MODULE__{}, minutes) do
-    overhead_percent = Application.fetch_env!(:visilitator, __MODULE__) |> Keyword.fetch!(:fulfillment_overhead_percentage)
-    :ets.insert(:users, {user.id, %{user | balance: user.balance + trunc(minutes - (minutes * overhead_percent))}})
+    overhead_percent =
+      Application.fetch_env!(:visilitator, __MODULE__)
+      |> Keyword.fetch!(:fulfillment_overhead_percentage)
+
+    :ets.insert(
+      :users,
+      {user.id, %{user | balance: user.balance + trunc(minutes - minutes * overhead_percent)}}
+    )
   end
 end

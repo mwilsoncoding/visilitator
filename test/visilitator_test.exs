@@ -76,8 +76,11 @@ defmodule VisilitatorTest do
     Visilitator.fulfill_visit(pal.id, visit.id)
     assert :ets.info(:transactions) |> Keyword.fetch!(:size) == 1
 
-    overhead_percent = Application.fetch_env!(:visilitator, Visilitator.User) |> Keyword.fetch!(:fulfillment_overhead_percentage)
-    credited_mins = pal.balance + trunc(visit.minutes - (visit.minutes * overhead_percent))
+    overhead_percent =
+      Application.fetch_env!(:visilitator, Visilitator.User)
+      |> Keyword.fetch!(:fulfillment_overhead_percentage)
+
+    credited_mins = pal.balance + trunc(visit.minutes - visit.minutes * overhead_percent)
     assert User.lookup(pal.id).balance == credited_mins
   end
 
