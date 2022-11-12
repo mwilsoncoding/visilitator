@@ -1,23 +1,24 @@
 defmodule VisilitatorTest do
-  use ExUnit.Case
+  use Visilitator.RepoCase
   doctest Visilitator
 
   alias Visilitator.User
 
-  test "creates user" do
+  test "persists user on creation" do
     first_name = "little"
     last_name = "bobby"
     email = "tables"
 
-    assert :ets.info(:users) |> Keyword.fetch!(:size) == 0
-    assert Visilitator.create_account(first_name, last_name, email) == :ok
-    assert :ets.info(:users) |> Keyword.fetch!(:size) == 1
+    %User{id: _, first_name: _, last_name: _, email: _, balance: 100} =
+      Visilitator.create_account(first_name, last_name, email)
+
+    assert User |> Repo.all() |> Enum.count() == 1
   end
 
   test "requests a visit" do
     Visilitator.create_account("little", "bobby", "tables")
 
-    member = :ets.lookup_element(:users, :ets.first(:users), 2)
+    [member | []] = User |> Repo.all()
     date = ~D[2021-01-01]
     minutes = 30
     tasks = ["talk", "laundry"]
@@ -32,7 +33,7 @@ defmodule VisilitatorTest do
 
   test "stops requests from members with a 0 balance of minutes" do
     Visilitator.create_account("little", "bobby", "tables")
-    member = :ets.lookup_element(:users, :ets.first(:users), 2)
+    [member | []] = User |> Repo.all()
 
     assert :ets.info(:visits) |> Keyword.fetch!(:size) == 0
     Visilitator.request_visit(member.id, ~D[2021-01-01], 100, ["talk", "laundry"])
@@ -48,7 +49,7 @@ defmodule VisilitatorTest do
 
   test "stops members from requesting minutes beyond their balance" do
     Visilitator.create_account("little", "bobby", "tables")
-    member = :ets.lookup_element(:users, :ets.first(:users), 2)
+    [member | []] = User |> Repo.all()
 
     assert :ets.info(:visits) |> Keyword.fetch!(:size) == 0
 
@@ -63,10 +64,7 @@ defmodule VisilitatorTest do
     Visilitator.create_account("little", "bobby", "tables")
     Visilitator.create_account("first", "last", "email")
 
-    member_key = :ets.first(:users)
-    pal_key = :ets.next(:users, member_key)
-    member = User.lookup(member_key)
-    pal = User.lookup(pal_key)
+    [member | [pal | []]] = User |> Repo.all()
 
     Visilitator.request_visit(member.id, ~D[2021-01-01], 30, ["talk", "laundry"])
 
@@ -89,10 +87,8 @@ defmodule VisilitatorTest do
   end
 
   defp clear_tables() do
-    :ets.delete_all_objects(:users)
     :ets.delete_all_objects(:visits)
     :ets.delete_all_objects(:transactions)
-    assert :ets.info(:users) |> Keyword.fetch!(:size) == 0
     assert :ets.info(:visits) |> Keyword.fetch!(:size) == 0
     assert :ets.info(:transactions) |> Keyword.fetch!(:size) == 0
   end

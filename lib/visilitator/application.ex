@@ -4,9 +4,9 @@ defmodule Visilitator.Application do
   use Application
 
   @impl true
+  @spec start(any, any) :: {:error, any} | {:ok, pid}
   def start(_type, _args) do
     # Sets up in-memory storage suitable for a PoC/MVP.
-    :ets.new(:users, [:named_table, :public])
     :ets.new(:visits, [:named_table, :public])
     :ets.new(:transactions, [:named_table, :public])
 

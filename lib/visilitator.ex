@@ -13,18 +13,16 @@ defmodule Visilitator do
   @doc """
   Create Account
   """
-  @spec create_account(String.t(), String.t(), String.t()) :: :ok
-  def create_account(first_name, last_name, email) do
-    user = User.create(first_name, last_name, email)
-
-    # IO is currently the UI. This makes testing noisy, but should be fine for a PoC/MVP.
-    IO.puts("Your user ID is: #{user.id}")
+  @spec create_account(String.t(), String.t(), String.t()) :: User.t()
+  def create_account(first_name, last_name, email)
+      when is_binary(first_name) and is_binary(last_name) and is_binary(email) do
+    User.create(first_name, last_name, email)
   end
 
   @doc """
   Request Visit
   """
-  @spec request_visit(String.t(), String.t(), pos_integer(), list(String.t())) :: :ok
+  @spec request_visit(integer(), String.t(), pos_integer(), list(String.t())) :: :ok
   def request_visit(user_id, date, minutes, tasks) do
     User.lookup(user_id)
     |> User.debit(minutes)
@@ -36,7 +34,7 @@ defmodule Visilitator do
   @doc """
   Fulfill Visit
   """
-  @spec fulfill_visit(String.t(), String.t()) :: :ok
+  @spec fulfill_visit(integer(), String.t()) :: :ok
   def fulfill_visit(user_id, visit_id) do
     pal = User.lookup(user_id)
     visit = Visit.lookup(visit_id)
