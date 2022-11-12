@@ -5,7 +5,6 @@ defmodule Visilitator.Visit do
   use Ecto.Schema
 
   alias Visilitator.Repo
-  alias Visilitator.Type
 
   @type t :: %__MODULE__{}
 
