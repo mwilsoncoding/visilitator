@@ -160,7 +160,7 @@ jobs:
     strategy:
       matrix:
         build-env:
-          - dev
+          - test
         builder-base-image-vsn:
           - 1.14.1
     steps:
