@@ -29,27 +29,20 @@ docker run --rm -it visilitator-builder mix test
 ```console
 docker run --rm -it visilitator-builder iex -S mix
 ```
-  - Create a member user
-  ```console
-  iex(1)> Visilitator.create_account("bobby", "tables", "bobby.tables@gmail.com")
-  Your user ID is: 658d9e5a-39d3-483e-9721-f4ae5df507b1
-  :ok
-  ```
-  - Request a visit
-  ```console
-  iex(2)> Visilitator.request_visit("658d9e5a-39d3-483e-9721-f4ae5df507b1", "01-01-2023", 30, ["talk", "laundry"])
-  Your visit ID is: efb1be2d-676f-4353-851e-71b37e0506a7
-  :ok
-  ```
-  - Create a pal user
-  ```console
-  iex(3)> Visilitator.create_account("port", "monteau", "wordplay@yahoo.biz")    
-  Your user ID is: c11b5228-c667-4295-b6e2-f8dae75372ef
-  :ok
-  ```
-  - Fulfill a visit
-  ```console
-  iex(4)> Visilitator.fulfill_visit("c11b5228-c667-4295-b6e2-f8dae75372ef", "efb1be2d-676f-4353-851e-71b37e0506a7")
-  Your transaction ID is: 6ffe01c0-c3a7-4b07-a184-216b4d72e84d
-  :ok
-  ```
+- In `iex`:
+  - create an account
+    ```elixir
+    Visilitator.create_account("bobby", "tables", "bobby.tables@gmail.com")
+    ```
+  - request a visit using the user ID obtained from creating an account
+    ```elixir
+    Visilitator.request_visit(1, "01-01-2023", 30, ["talk", "laundry"])
+    ```
+  - create a pal user
+    ```elixir
+    Visilitator.create_account("port", "monteau", "wordplay@yahoo.biz")
+    ```
+  - fulfill a visit using the pal's ID and the visit's ID
+    ```elixir
+    Visilitator.fulfill_visit(2, "efb1be2d-676f-4353-851e-71b37e0506a7")
+    ```

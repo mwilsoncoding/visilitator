@@ -5,8 +5,8 @@ defmodule Visilitator.Transaction do
 
   @type t :: %__MODULE__{
           id: String.t(),
-          member_id: String.t(),
-          pal_id: String.t(),
+          member_id: integer(),
+          pal_id: integer(),
           visit_id: String.t()
         }
   defstruct [:id, :member_id, :pal_id, :visit_id]
@@ -14,7 +14,7 @@ defmodule Visilitator.Transaction do
   @doc """
   Given member_id, pal_id, and visit_id, this function creates, persists to storage, and returns a Transaction
   """
-  @spec create(String.t(), String.t(), String.t()) :: t()
+  @spec create(integer(), integer(), String.t()) :: t()
   def create(member_id, pal_id, visit_id) do
     tid = UUID.uuid4()
     txn = %__MODULE__{id: tid, member_id: member_id, pal_id: pal_id, visit_id: visit_id}

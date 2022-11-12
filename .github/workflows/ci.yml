@@ -78,7 +78,7 @@ jobs:
     strategy:
       matrix:
         build-env:
-          - dev
+          - test
         builder-base-image-vsn:
           - 1.14.1
     steps:
@@ -96,7 +96,7 @@ jobs:
     strategy:
       matrix:
         build-env:
-          - dev
+          - test
         builder-base-image-vsn:
           - 1.14.1
     steps:
@@ -132,7 +132,7 @@ jobs:
     strategy:
       matrix:
         build-env:
-          - dev
+          - test
         builder-base-image-vsn:
           - 1.14.1
     steps:
@@ -145,12 +145,24 @@ jobs:
       - run: |-
           docker container run ghcr.io/${{ github.repository }}/visilitator-builder:${{ matrix.build-env }}-${{ matrix.builder-base-image-vsn }}-${{ github.sha }} mix credo
   unit-test:
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_PASSWORD: pg
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
     runs-on: ubuntu-latest
     needs: build
     strategy:
       matrix:
         build-env:
-          - dev
+          - test
         builder-base-image-vsn:
           - 1.14.1
     steps:
@@ -161,4 +173,4 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - run: |-
-          docker container run ghcr.io/${{ github.repository }}/visilitator-builder:${{ matrix.build-env }}-${{ matrix.builder-base-image-vsn }}-${{ github.sha }} mix test
+          docker container run --network host ghcr.io/${{ github.repository }}/visilitator-builder:${{ matrix.build-env }}-${{ matrix.builder-base-image-vsn }}-${{ github.sha }} mix test

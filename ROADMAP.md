@@ -29,10 +29,10 @@ OCI: Dockerfile
 Logging: Logger
 Async Message handling: Broadway + RabbitMQ
 
-## Phase 4: Front End
+## Phase 4: k8s
 
 Storage: PG + Ecto
-UI: Phoenix Web App --AMQP message-> rabbitmq -> Broadway consumer
+UI: IEX + AMQP
 Tests: ExUnit, format, credo, dialyzer
 Config: dev, test, prod
 OCI: Dockerfile

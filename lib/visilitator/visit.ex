@@ -5,7 +5,7 @@ defmodule Visilitator.Visit do
 
   @type t :: %__MODULE__{
           id: String.t(),
-          member_id: String.t(),
+          member_id: integer(),
           date: String.t(),
           minutes: non_neg_integer(),
           tasks: list(String.t())
@@ -15,7 +15,7 @@ defmodule Visilitator.Visit do
   @doc """
   Given user_id, date, minutes, and tasks, this function creates, persists to storage, and returns a Visit
   """
-  @spec create(String.t(), String.t(), non_neg_integer(), list(String.t())) :: t()
+  @spec create(integer(), String.t(), non_neg_integer(), list(String.t())) :: t()
   def create(user_id, date, minutes, tasks) do
     vid = UUID.uuid4()
     visit = %__MODULE__{id: vid, member_id: user_id, date: date, minutes: minutes, tasks: tasks}
