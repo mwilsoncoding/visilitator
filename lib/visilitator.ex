@@ -22,26 +22,18 @@ defmodule Visilitator do
   @doc """
   Request Visit
   """
-  @spec request_visit(integer(), String.t(), pos_integer(), list(String.t())) :: :ok
-  def request_visit(user_id, date, minutes, tasks) do
-    User.lookup(user_id)
-    |> User.debit(minutes)
-
-    visit = Visit.create(user_id, date, minutes, tasks)
-    IO.puts("Your visit ID is: #{visit.id}")
+  @spec request_visit(User.t(), Date.t(), pos_integer(), list(String.t())) :: Visit.t()
+  def request_visit(user, date, minutes, tasks)
+      when user.balance > 0 and minutes <= user.balance do
+    user
+    |> Visit.create(date, minutes, tasks)
   end
 
   @doc """
   Fulfill Visit
   """
-  @spec fulfill_visit(integer(), String.t()) :: :ok
-  def fulfill_visit(user_id, visit_id) do
-    pal = User.lookup(user_id)
-    visit = Visit.lookup(visit_id)
-
-    # In a DB impl, the following updates would happen in a single transaction
-    User.fulfill(pal, visit.minutes)
-    txn = Transaction.create(visit.member_id, pal.id, visit.id)
-    IO.puts("Your transaction ID is: #{txn.id}")
+  @spec fulfill_visit(User.t(), Visit.t()) :: {Transaction.t(), User.t(), User.t()}
+  def fulfill_visit(user, visit) do
+    Transaction.create(user, visit)
   end
 end

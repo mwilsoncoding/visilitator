@@ -1,7 +1,7 @@
 import Config
 
 config :visilitator, Visilitator.Repo,
-  database: "postgres",
+  database: "visilitator",
   username: "postgres",
   password: "pg",
   hostname: "pg"
