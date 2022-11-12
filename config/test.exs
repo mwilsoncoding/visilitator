@@ -4,5 +4,5 @@ config :visilitator, Visilitator.Repo,
   username: "postgres",
   password: "pg",
   database: "postgres",
-  hostname: "127.0.0.1",
+  hostname: "postgres",
   pool: Ecto.Adapters.SQL.Sandbox
