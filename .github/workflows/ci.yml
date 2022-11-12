@@ -173,4 +173,4 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - run: |-
-          docker container run ghcr.io/${{ github.repository }}/visilitator-builder:${{ matrix.build-env }}-${{ matrix.builder-base-image-vsn }}-${{ github.sha }} mix test
+          docker container run --network host ghcr.io/${{ github.repository }}/visilitator-builder:${{ matrix.build-env }}-${{ matrix.builder-base-image-vsn }}-${{ github.sha }} mix test
