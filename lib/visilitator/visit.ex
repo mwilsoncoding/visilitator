@@ -5,6 +5,7 @@ defmodule Visilitator.Visit do
   use Ecto.Schema
 
   alias Visilitator.Repo
+  alias Visilitator.User
 
   @type t :: %__MODULE__{}
 
@@ -18,7 +19,7 @@ defmodule Visilitator.Visit do
   @doc """
   Given user_id, date, minutes, and tasks, this function creates, persists to storage, and returns a Visit
   """
-  @spec create(Type.user(), Date.t(), non_neg_integer(), list(String.t())) :: t()
+  @spec create(User.t(), Date.t(), non_neg_integer(), list(String.t())) :: t()
   def create(user, date, minutes, tasks) when is_integer(minutes) and minutes > 0 do
     %__MODULE__{
       member: user.id,
