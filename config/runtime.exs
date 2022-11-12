@@ -15,6 +15,6 @@ if config_env() == :prod do
   config :visilitator, Visilitator.Repo,
     username: System.get_env("DB_USERNAME", "postgres"),
     password: System.fetch_env!("DB_PASSWORD"),
-    database: System.get_env("DB_NAME", "postgres"),
+    database: System.get_env("DB_NAME", "visilitator"),
     hostname: System.get_env("DB_HOST", "pg")
 end

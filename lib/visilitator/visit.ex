@@ -2,30 +2,31 @@ defmodule Visilitator.Visit do
   @moduledoc """
   Visit object
   """
+  use Ecto.Schema
 
-  @type t :: %__MODULE__{
-          id: String.t(),
-          member_id: integer(),
-          date: String.t(),
-          minutes: non_neg_integer(),
-          tasks: list(String.t())
-        }
-  defstruct [:id, :member_id, :date, :minutes, :tasks]
+  alias Visilitator.Repo
+  alias Visilitator.User
+
+  @type t :: %__MODULE__{}
+
+  schema "visits" do
+    field(:member, :integer)
+    field(:date, :date)
+    field(:minutes, :integer)
+    field(:tasks, {:array, :string})
+  end
 
   @doc """
   Given user_id, date, minutes, and tasks, this function creates, persists to storage, and returns a Visit
   """
-  @spec create(integer(), String.t(), non_neg_integer(), list(String.t())) :: t()
-  def create(user_id, date, minutes, tasks) do
-    vid = UUID.uuid4()
-    visit = %__MODULE__{id: vid, member_id: user_id, date: date, minutes: minutes, tasks: tasks}
-    :ets.insert(:visits, {vid, visit})
-    visit
+  @spec create(User.t(), Date.t(), non_neg_integer(), list(String.t())) :: t()
+  def create(user, date, minutes, tasks) when is_integer(minutes) and minutes > 0 do
+    %__MODULE__{
+      member: user.id,
+      date: date,
+      minutes: minutes,
+      tasks: tasks
+    }
+    |> Repo.insert!()
   end
-
-  @doc """
-  Given visit_id, this function returns the matching Visit from storage
-  """
-  @spec lookup(String.t()) :: t()
-  def lookup(visit_id), do: :ets.lookup_element(:visits, visit_id, 2)
 end

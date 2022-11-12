@@ -5,6 +5,7 @@ defmodule Visilitator.User do
   use Ecto.Schema
 
   alias Visilitator.Repo
+  alias Visilitator.Visit
 
   @type t :: %__MODULE__{}
 
@@ -37,31 +38,27 @@ defmodule Visilitator.User do
   end
 
   @doc """
-  Given user_id, this function returns the matching User from storage
-  """
-  @spec lookup(integer()) :: t()
-  def lookup(user_id) when is_integer(user_id), do: __MODULE__ |> Repo.get(user_id)
-
-  @doc """
   Given user and minutes, this function updates storage for the User with the difference of the user's balance and the given minutes
   """
-  @spec debit(t(), pos_integer()) :: t()
-  def debit(user = %__MODULE__{}, minutes)
-      when is_integer(minutes) and minutes > 0 and user.balance > 0 and user.balance >= minutes do
-    balance_changeset(user, %{balance: user.balance - minutes})
+  @spec debit(t(), Visit.t()) :: t()
+  def debit(user = %__MODULE__{}, visit = %Visit{})
+      when user.balance > 0 and user.balance >= visit.minutes do
+    balance_changeset(user, %{balance: user.balance - visit.minutes})
     |> Repo.update!()
   end
 
   @doc """
   Given user and minutes, this function updates storage for the User with the sum of the user's balance and 85% of the given minutes
   """
-  @spec fulfill(t(), pos_integer()) :: t()
-  def fulfill(user = %__MODULE__{}, minutes) when is_integer(minutes) and minutes > 0 do
+  @spec fulfill(t(), Visit.t()) :: t()
+  def fulfill(user = %__MODULE__{}, visit = %Visit{}) do
     overhead_percent =
       Application.fetch_env!(:visilitator, __MODULE__)
       |> Keyword.fetch!(:fulfillment_overhead_percentage)
 
-    balance_changeset(user, %{balance: user.balance + trunc(minutes - minutes * overhead_percent)})
+    balance_changeset(user, %{
+      balance: user.balance + trunc(visit.minutes - visit.minutes * overhead_percent)
+    })
     |> Repo.update!()
   end
 end
