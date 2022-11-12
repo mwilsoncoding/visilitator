@@ -6,9 +6,6 @@ defmodule Visilitator.Application do
   @impl true
   @spec start(any, any) :: {:error, any} | {:ok, pid}
   def start(_type, _args) do
-    # Sets up in-memory storage suitable for a PoC/MVP.
-    :ets.new(:transactions, [:named_table, :public])
-
     children = [
       Visilitator.Repo
     ]

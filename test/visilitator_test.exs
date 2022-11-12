@@ -4,6 +4,7 @@ defmodule VisilitatorTest do
 
   alias Visilitator.User
   alias Visilitator.Visit
+  alias Visilitator.Transaction
 
   test "persists user on creation" do
     first_name = "little"
@@ -34,8 +35,7 @@ defmodule VisilitatorTest do
   end
 
   test "stops members from requesting minutes beyond their balance" do
-    Visilitator.create_account("little", "bobby", "tables")
-    [member | []] = User |> Repo.all()
+    member = Visilitator.create_account("little", "bobby", "tables")
 
     assert Visit |> Repo.all() |> Enum.count() == 0
 
@@ -51,19 +51,22 @@ defmodule VisilitatorTest do
     pal = Visilitator.create_account("first", "last", "email")
     visit = Visilitator.request_visit(member, ~D[2021-01-01], 30, ["talk", "laundry"])
 
-    assert :ets.info(:transactions) |> Keyword.fetch!(:size) == 0
-    Visilitator.fulfill_visit(pal, visit)
-    assert :ets.info(:transactions) |> Keyword.fetch!(:size) == 1
+    assert Transaction |> Repo.all() |> Enum.count() == 0
+
+    {%Transaction{}, updated_member = %User{}, updated_pal = %User{}} =
+      Visilitator.fulfill_visit(pal, visit)
+
+    assert Transaction |> Repo.all() |> Enum.count() == 1
 
     debited_mins = member.balance - visit.minutes
-    assert (User |> Repo.get(member.id)).balance == debited_mins
+    assert updated_member.balance == debited_mins
 
     overhead_percent =
       Application.fetch_env!(:visilitator, Visilitator.User)
       |> Keyword.fetch!(:fulfillment_overhead_percentage)
 
     credited_mins = pal.balance + trunc(visit.minutes - visit.minutes * overhead_percent)
-    assert (User |> Repo.get(pal.id)).balance == credited_mins
+    assert updated_pal.balance == credited_mins
   end
 
   test "stops requests from members with a 0 balance of minutes" do
@@ -77,14 +80,5 @@ defmodule VisilitatorTest do
              :function_clause
 
     assert Visit |> Repo.all() |> Enum.count() == 1
-  end
-
-  setup do
-    on_exit(&clear_tables/0)
-  end
-
-  defp clear_tables() do
-    :ets.delete_all_objects(:transactions)
-    assert :ets.info(:transactions) |> Keyword.fetch!(:size) == 0
   end
 end
