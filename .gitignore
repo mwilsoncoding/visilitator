@@ -13,8 +13,9 @@ visilitator-*.tar
 # Ignore anything VSCode populates for plugins
 .elixir_ls/
 
-# Ignore db or package manager cache directories
+# Ignore cache directories
 pgdata
+rabbitmq
 /.mix
 /.hex
 /.cache

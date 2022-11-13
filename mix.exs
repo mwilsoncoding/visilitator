@@ -18,7 +18,8 @@ defmodule Visilitator.MixProject do
 
   defp aliases do
     [
-      test: ["ecto.create --quiet", "ecto.migrate", "test"]
+      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
+      "ecto.reset": ["ecto.drop --quiet", "ecto.create --quiet", "ecto.migrate --quiet"]
     ]
   end
 
@@ -40,7 +41,9 @@ defmodule Visilitator.MixProject do
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
       {:ecto_sql, "~> 3.9"},
-      {:postgrex, "~> 0.16.5"}
+      {:postgrex, "~> 0.16.5"},
+      {:broadway_rabbitmq, "~> 0.7"},
+      {:json, "~> 1.4"}
     ]
   end
 end

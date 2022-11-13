@@ -6,9 +6,23 @@ defmodule Visilitator.Application do
   @impl true
   @spec start(any, any) :: {:error, any} | {:ok, pid}
   def start(_type, _args) do
-    children = [
-      Visilitator.Repo
-    ]
+    children =
+      [
+        Visilitator.Repo
+      ]
+      |> (fn c ->
+            if Application.fetch_env!(:visilitator, __MODULE__)
+               |> Keyword.fetch!(:enable_broadway) == true do
+              c ++
+                [
+                  Visilitator.Broadway.CreateAccount,
+                  Visilitator.Broadway.RequestVisit,
+                  Visilitator.Broadway.FulfillVisit
+                ]
+            else
+              c
+            end
+          end).()
 
     opts = [strategy: :one_for_one, name: Visilitator.Supervisor]
     Supervisor.start_link(children, opts)

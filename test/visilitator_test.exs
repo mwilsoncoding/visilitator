@@ -1,5 +1,5 @@
 defmodule VisilitatorTest do
-  use Visilitator.RepoCase
+  use Visilitator.RepoCase, async: true
   doctest Visilitator
 
   alias Visilitator.User
