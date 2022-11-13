@@ -7,8 +7,6 @@ The Visit Facilitator!
 From the prompt:
 > This application may be command-line or API-only. It does not require a graphical or web interface.
 
-Interacting with this codebase can be done a fem different ways:
-
 ### VSCode
 
 VSCode setup and usage instructions are included in the [Contribution Guide](CONTRIBUTING.md)
@@ -31,6 +29,7 @@ docker run --rm \
   -it \
   -e DB_HOST=$(docker inspect -f "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}" pg) \
   -e DB_PASSWORD=pg \
+  -e ENABLE_BROADWAY=false \
   ghcr.io/mwilsoncoding/visilitator/visilitator-builder:test-1.14.1-7d4d216deca53f481a8a168110a31110ae541320 mix test
 ```
 - Run code in `iex` (using the `prod` image)
@@ -39,6 +38,7 @@ docker run --rm \
   -it \
   -e DB_HOST=$(docker inspect -f "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}" pg) \
   -e DB_PASSWORD=pg \
+  -e ENABLE_BROADWAY=false \
   ghcr.io/mwilsoncoding/visilitator/visilitator-builder:prod-1.14.1-7d4d216deca53f481a8a168110a31110ae541320 iex -S mix
 ```
   - E.g.

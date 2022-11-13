@@ -17,6 +17,34 @@ if config_env() == :prod do
     password: System.fetch_env!("DB_PASSWORD"),
     database: System.get_env("DB_NAME", "visilitator"),
     hostname: System.get_env("DB_HOST", "pg")
+
+  config :visilitator, Visilitator.Broadway.CreateAccount,
+    queue: System.get_env("QUEUE_CREATE_ACCOUNT", "create_account")
+
+  config :visilitator, Visilitator.Broadway.RequestVisit,
+    queue: System.get_env("QUEUE_REQUEST_VISIT", "request_visit")
+
+  config :visilitator, Visilitator.Broadway.FulfillVisit,
+    queue: System.get_env("QUEUE_FULFILL_VISIT", "fulfill_visit")
+
+  config :visilitator, Visilitator.Application,
+    enable_broadway:
+      System.get_env("ENABLE_BROADWAY", "true") |> String.downcase() |> String.to_existing_atom()
+
+  rabbitmq_pass =
+    if System.get_env("ENABLE_BROADWAY", "true")
+       |> String.downcase()
+       |> String.to_existing_atom() == true do
+      System.fetch_env!("RABBITMQ_PASSWORD")
+    else
+      System.get_env("RABBITMQ_PASSWORD", "")
+    end
+
+  config :visilitator, :rabbitmq,
+    host: System.get_env("RABBITMQ_HOST", "rabbitmq"),
+    username: System.get_env("RABBITMQ_USERNAME", "rmq"),
+    password: rabbitmq_pass,
+    producer: BroadwayRabbitMQ.Producer
 end
 
 if config_env() == :test do
@@ -26,4 +54,23 @@ if config_env() == :test do
     database: System.get_env("DB_NAME", "visilitator"),
     hostname: System.get_env("DB_HOST", "localhost"),
     pool: Ecto.Adapters.SQL.Sandbox
+
+  config :visilitator, Visilitator.Broadway.CreateAccount,
+    queue: System.get_env("QUEUE_CREATE_ACCOUNT", "create_account")
+
+  config :visilitator, Visilitator.Broadway.RequestVisit,
+    queue: System.get_env("QUEUE_REQUEST_VISIT", "request_visit")
+
+  config :visilitator, Visilitator.Broadway.FulfillVisit,
+    queue: System.get_env("QUEUE_FULFILL_VISIT", "fulfill_visit")
+
+  config :visilitator, :rabbitmq,
+    host: System.get_env("RABBITMQ_HOST", "rabbitmq"),
+    username: System.get_env("RABBITMQ_USERNAME", "rmq"),
+    password: System.get_env("RABBITMQ_PASSWORD", "rmq"),
+    producer: Broadway.DummyProducer
+
+  config :visilitator, Visilitator.Application,
+    enable_broadway:
+      System.get_env("ENABLE_BROADWAY", "true") |> String.downcase() |> String.to_existing_atom()
 end
