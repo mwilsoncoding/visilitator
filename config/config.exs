@@ -1,11 +1,5 @@
 import Config
 
-config :visilitator, Visilitator.Repo,
-  database: "visilitator",
-  username: "postgres",
-  password: "pg",
-  hostname: "pg"
-
 config :visilitator,
   ecto_repos: [Visilitator.Repo]
 
