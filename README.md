@@ -7,42 +7,96 @@ The Visit Facilitator!
 From the prompt:
 > This application may be command-line or API-only. It does not require a graphical or web interface.
 
-Steps for running and interacting with this repository (copy/paste-able):
+Interacting with this codebase can be done a fem different ways:
 
-- Clone the repository
+### VSCode
+
+VSCode setup and usage instructions are included in the [Contribution Guide](CONTRIBUTING.md)
+
+### Docker
+
+If you have `docker` installed, the quickest way to test/interact with this code is to run one of the images published to the GitHub Container Registry:
+
+- Start a postgres DB
 ```console
-git clone 
+docker run --rm \
+  --name pg \
+  -e POSTGRES_PASSWORD=pg \
+  -d \
+  postgres:15-alpine
+export DATABASE_IP=
 ```
-- Navigate to the root of the repository
+- Run tests (using the `test` image)
 ```console
-cd visilitator
-```
-- Build an OCI image with the `--target` set to `builder` to compile the code with access to `mix` and `iex`
-```console
-docker build -t visilitator-builder --target builder .
-```
-- Run tests
-```console
-docker run --rm -it visilitator-builder mix test
+docker run --rm \
+  -it \
+  -e DB_HOST=$(docker inspect -f "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}" pg) \
+  -e DB_PASSWORD=pg \
+  ghcr.io/mwilsoncoding/visilitator/visilitator-builder:test-1.14.1-1f3f0aa1b2af3c1b03aed43e8ad9f7545e5becf1 mix test
 ```
 - Run code in `iex`
 ```console
-docker run --rm -it visilitator-builder iex -S mix
+docker run --rm \
+  -it \
+  -e DB_HOST=$(docker inspect -f "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}" pg) \
+  -e DB_PASSWORD=pg \
+  ghcr.io/mwilsoncoding/visilitator/visilitator-builder:test-1.14.1-1f3f0aa1b2af3c1b03aed43e8ad9f7545e5becf1 iex -S mix
 ```
-- In `iex`:
-  - create an account
-    ```elixir
-    Visilitator.create_account("bobby", "tables", "bobby.tables@gmail.com")
-    ```
-  - request a visit using the user ID obtained from creating an account
-    ```elixir
-    Visilitator.request_visit(1, "01-01-2023", 30, ["talk", "laundry"])
-    ```
-  - create a pal user
-    ```elixir
-    Visilitator.create_account("port", "monteau", "wordplay@yahoo.biz")
-    ```
-  - fulfill a visit using the pal's ID and the visit's ID
-    ```elixir
-    Visilitator.fulfill_visit(2, "efb1be2d-676f-4353-851e-71b37e0506a7")
-    ```
+  - E.g.
+  ```elixir
+  Erlang/OTP 25 [erts-13.1.2] [source] [64-bit] [smp:8:8] [ds:8:8:10] [async-threads:1] [jit]
+
+  Generated visilitator app
+  Interactive Elixir (1.14.1) - press Ctrl+C to exit (type h() ENTER for help)
+  iex(1)> Visilitator.create_account("little", "bobby", "tables")
+  %Visilitator.User{
+    __meta__: #Ecto.Schema.Metadata<:loaded, "users">,
+    id: 34,
+    first_name: "little",
+    last_name: "bobby",
+    email: "tables",
+    balance: 100
+  }
+  iex(2)> v(1) |> Visilitator.request_visit(Date.utc_today(), 30, ["talk", "laundry"])
+  %Visilitator.Visit{
+    __meta__: #Ecto.Schema.Metadata<:loaded, "visits">,
+    id: 34,
+    member: 34,
+    date: ~D[2022-11-13],
+    minutes: 30,
+    tasks: ["talk", "laundry"]
+  }
+  iex(3)> Visilitator.create_account("port", "monteau", "wordplay@gmail.com")
+  %Visilitator.User{
+    __meta__: #Ecto.Schema.Metadata<:loaded, "users">,
+    id: 35,
+    first_name: "port",
+    last_name: "monteau",
+    email: "wordplay@gmail.com",
+    balance: 100
+  }
+  iex(4)> v(3) |> Visilitator.fulfill_visit(v(2))
+  {%Visilitator.Transaction{
+     __meta__: #Ecto.Schema.Metadata<:loaded, "transactions">,
+     id: 34,
+     member: 34,
+     pal: 35,
+     visit: 34
+   },
+   %Visilitator.User{
+     __meta__: #Ecto.Schema.Metadata<:loaded, "users">,
+     id: 34,
+     first_name: "little",
+     last_name: "bobby",
+     email: "tables",
+     balance: 70
+   },
+   %Visilitator.User{
+     __meta__: #Ecto.Schema.Metadata<:loaded, "users">,
+     id: 35,
+     first_name: "port",
+     last_name: "monteau",
+     email: "wordplay@gmail.com",
+     balance: 125
+   }}
+  ```
