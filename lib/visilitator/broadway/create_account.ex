@@ -11,7 +11,7 @@ defmodule Visilitator.Broadway.CreateAccount do
           {Application.fetch_env!(:visilitator, :rabbitmq) |> Keyword.fetch!(:producer),
            on_failure: :reject,
            queue: Application.fetch_env!(:visilitator, __MODULE__) |> Keyword.fetch!(:queue),
-           declare: [],
+           declare: [durable: true],
            connection: [
              host: Application.fetch_env!(:visilitator, :rabbitmq) |> Keyword.fetch!(:host),
              username:

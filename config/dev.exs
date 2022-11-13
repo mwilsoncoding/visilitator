@@ -17,3 +17,9 @@ config :visilitator, :rabbitmq,
   password: "rmq",
   host: "rabbitmq",
   producer: BroadwayRabbitMQ.Producer
+
+config :visilitator, Visilitator.Application, enable_broadway: true
+
+config :logger,
+  backends: [:console],
+  level: :debug

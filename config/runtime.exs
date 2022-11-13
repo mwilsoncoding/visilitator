@@ -45,6 +45,10 @@ if config_env() == :prod do
     username: System.get_env("RABBITMQ_USERNAME", "rmq"),
     password: rabbitmq_pass,
     producer: BroadwayRabbitMQ.Producer
+
+  config :logger,
+    backends: [:console],
+    level: System.get_env("LOG_LEVEL", "info") |> String.downcase() |> String.to_existing_atom()
 end
 
 if config_env() == :test do
@@ -73,4 +77,8 @@ if config_env() == :test do
   config :visilitator, Visilitator.Application,
     enable_broadway:
       System.get_env("ENABLE_BROADWAY", "true") |> String.downcase() |> String.to_existing_atom()
+
+  config :logger,
+    backends: [:console],
+    level: System.get_env("LOG_LEVEL", "notice") |> String.downcase() |> String.to_existing_atom()
 end
