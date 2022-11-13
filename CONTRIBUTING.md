@@ -40,7 +40,7 @@ E.g.
 mix ecto.drop
 mix ecto.create --quiet
 mix ecto.migrate
-mix format --check_formatted
+mix format --check-formatted
 mix test
 mix credo
 mix dialyzer

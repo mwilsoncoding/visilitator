@@ -24,7 +24,6 @@ docker run --rm \
   -e POSTGRES_PASSWORD=pg \
   -d \
   postgres:15-alpine
-export DATABASE_IP=
 ```
 - Run tests (using the `test` image)
 ```console
