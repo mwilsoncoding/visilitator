@@ -5,3 +5,5 @@ ASSUMPTIONS.md
 SECURITY.md
 .devcontainer
 .github
+pgdata
+rabbitmq
