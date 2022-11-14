@@ -22,4 +22,4 @@ config :visilitator, Visilitator.Application, enable_broadway: true
 
 config :logger,
   backends: [:console],
-  level: :debug
+  level: :info

@@ -36,6 +36,12 @@ defmodule Visilitator.Broadway.FulfillVisit do
     )
   end
 
+  @doc """
+  Async message ingestion for fulfill_visit.
+
+  Example JSON message:
+    {"pal": 42, "visit": 14}
+  """
   @impl true
   def handle_message(_, message, _) do
     %{"pal" => pal, "visit" => visit} = message.data |> JSON.decode!()

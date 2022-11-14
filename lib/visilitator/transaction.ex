@@ -17,7 +17,8 @@ defmodule Visilitator.Transaction do
   end
 
   @doc """
-  Given member_id, pal_id, and visit_id, this function creates, persists to storage, and returns a Transaction
+  Given a pal and a visit, this function creates a Transaction and persists to storage while
+  updating the given pal and the member associated with the given visit.
   """
   @spec create(User.t(), Visit.t()) :: {t(), User.t(), User.t()}
   def create(pal = %User{}, visit = %Visit{}) do

@@ -35,6 +35,12 @@ defmodule Visilitator.Broadway.RequestVisit do
     )
   end
 
+  @doc """
+  Async message ingestion for request_visit.
+
+  Example JSON message:
+    {"member": 18, "date": "2023-02-02", "minutes": 22, "tasks": ["cook", "clean"]}
+  """
   @impl true
   def handle_message(_, message, _) do
     %{"member" => member, "date" => date, "minutes" => minutes, "tasks" => tasks} =

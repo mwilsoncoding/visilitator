@@ -13,6 +13,8 @@ defmodule Visilitator do
 
   @doc """
   Create Account
+
+  Creates a new account in the system for the given name and email.
   """
   @spec create_account(String.t(), String.t(), String.t()) :: User.t()
   def create_account(first_name, last_name, email)
@@ -24,6 +26,8 @@ defmodule Visilitator do
 
   @doc """
   Request Visit
+
+  Creates a visit in the system for the given Member, date, minutes, and list of tasks
   """
   @spec request_visit(User.t(), Date.t(), pos_integer(), list(String.t())) :: Visit.t()
   def request_visit(member, date, minutes, tasks)
@@ -38,6 +42,8 @@ defmodule Visilitator do
 
   @doc """
   Fulfill Visit
+
+  Creates a transaction in the system representing a Pal's fulfillment of a visit
   """
   @spec fulfill_visit(User.t(), Visit.t()) :: {Transaction.t(), User.t(), User.t()}
   def fulfill_visit(pal, visit) do

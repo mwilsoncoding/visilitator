@@ -17,7 +17,7 @@ defmodule Visilitator.Visit do
   end
 
   @doc """
-  Given user_id, date, minutes, and tasks, this function creates, persists to storage, and returns a Visit
+  Given a user, date, minutes, and list of tasks, this function creates, persists to storage, and returns a Visit
   """
   @spec create(User.t(), Date.t(), non_neg_integer(), list(String.t())) :: t()
   def create(user, date, minutes, tasks) when is_integer(minutes) and minutes > 0 do

@@ -3,6 +3,8 @@ defmodule Visilitator.Application do
 
   use Application
 
+  require Logger
+
   @impl true
   @spec start(any, any) :: {:error, any} | {:ok, pid}
   def start(_type, _args) do
