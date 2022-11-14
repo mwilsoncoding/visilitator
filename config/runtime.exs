@@ -9,7 +9,7 @@ if config_env() == :prod do
       System.get_env("FULFILLMENT_OVERHEAD_PERCENTAGE") || default_fulfillment_overhead_percentage
     )
 
-  config :visilitator, Visilitator.User,
+  config :visilitator, Visilitator.Transaction,
     fulfillment_overhead_percentage: parsed_fulfillment_overhead_percentage
 
   config :visilitator, Visilitator.Repo,

@@ -23,8 +23,8 @@ defmodule Visilitator.Transaction do
   @spec create(User.t(), Visit.t()) :: {t(), User.t(), User.t()}
   def create(pal = %User{}, visit = %Visit{}) do
     member = User |> Repo.get(visit.member)
-    debited_amount = member |> User.total_after_debit(visit)
-    fulfilled_amount = pal |> User.total_after_fulfillment(visit)
+    debited_amount = member |> total_after_debit(visit)
+    fulfilled_amount = pal |> total_after_fulfillment(visit)
 
     transaction = %__MODULE__{
       member: visit.member,
@@ -34,12 +34,18 @@ defmodule Visilitator.Transaction do
 
     {:ok, changes} =
       Ecto.Multi.new()
-      |> Ecto.Multi.update(:debit_member, User.debit(member, visit))
+      |> Ecto.Multi.update(
+        :debit_member,
+        User.balance_changeset(member, %{balance: total_after_debit(member, visit)})
+      )
       |> Ecto.Multi.run(:check_debit, fn
         _repo, %{debit_member: %User{balance: ^debited_amount}} -> {:ok, nil}
         _repo, %{debit_member: _} -> {:error, {:failed_debit, member}}
       end)
-      |> Ecto.Multi.update(:fulfill_pal, User.fulfill(pal, visit))
+      |> Ecto.Multi.update(
+        :fulfill_pal,
+        User.balance_changeset(pal, %{balance: total_after_fulfillment(pal, visit)})
+      )
       |> Ecto.Multi.run(:check_fulfill, fn
         _repo, %{fulfill_pal: %User{balance: ^fulfilled_amount}} -> {:ok, nil}
         _repo, %{fulfill_pal: _} -> {:error, {:failed_fulfill, pal}}
@@ -48,5 +54,17 @@ defmodule Visilitator.Transaction do
       |> Repo.transaction()
 
     {changes.create_transaction, changes.debit_member, changes.fulfill_pal}
+  end
+
+  defp total_after_debit(user = %User{}, visit = %Visit{}) do
+    user.balance - visit.minutes
+  end
+
+  defp total_after_fulfillment(user = %User{}, visit = %Visit{}) do
+    overhead_percent =
+      Application.fetch_env!(:visilitator, __MODULE__)
+      |> Keyword.fetch!(:fulfillment_overhead_percentage)
+
+    user.balance + trunc(visit.minutes - visit.minutes * overhead_percent)
   end
 end
