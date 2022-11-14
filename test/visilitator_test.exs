@@ -178,7 +178,7 @@ defmodule VisilitatorTest do
     assert (User |> Repo.get(member.id)).balance == debited_mins
 
     overhead_percent =
-      Application.fetch_env!(:visilitator, Visilitator.User)
+      Application.fetch_env!(:visilitator, Visilitator.Transaction)
       |> Keyword.fetch!(:fulfillment_overhead_percentage)
 
     credited_mins = pal.balance + trunc(visit.minutes - visit.minutes * overhead_percent)

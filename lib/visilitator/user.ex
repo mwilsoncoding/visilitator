@@ -5,7 +5,6 @@ defmodule Visilitator.User do
   use Ecto.Schema
 
   alias Visilitator.Repo
-  alias Visilitator.Visit
 
   @type t :: %__MODULE__{}
 
@@ -16,14 +15,20 @@ defmodule Visilitator.User do
     field(:balance, :integer)
   end
 
-  defp balance_changeset(user = %__MODULE__{}, params = %{}) do
+  @doc """
+  Given a user and parameters to potentially update, this function returns
+  an Ecto Changeset suitable for modifying the balance of a user
+  """
+  @spec balance_changeset(t(), map()) :: Ecto.Changeset.t()
+  def balance_changeset(user = %__MODULE__{}, params = %{}) do
     user
     |> Ecto.Changeset.cast(params, [:balance])
     |> Ecto.Changeset.validate_required([:balance])
   end
 
   @doc """
-  Given first_name, last_name, and email, this function creates, persists to storage, and returns a User
+  Given first_name, last_name, and email, this function creates, persists to
+  storage, and returns a User
   """
   @spec create(binary, binary, binary) :: t()
   def create(first_name, last_name, email)
@@ -35,46 +40,5 @@ defmodule Visilitator.User do
       balance: 100
     }
     |> Repo.insert!()
-  end
-
-  @doc """
-  Given a user and a visit, this function returns a changeset suitable for debiting the member's
-  balance of minutes
-  """
-  @spec debit(t(), Visit.t()) :: Ecto.Changeset.t()
-  def debit(user = %__MODULE__{}, visit = %Visit{})
-      when user.balance > 0 and user.balance >= visit.minutes do
-    balance_changeset(user, %{balance: total_after_debit(user, visit)})
-  end
-
-  @doc """
-  Given a user and a visit, this function returns a changeset suitable for crediting the pal's
-  balance of minutes with a percentage of the visit's minutes
-  """
-  @spec fulfill(t(), Visit.t()) :: Ecto.Changeset.t()
-  def fulfill(user = %__MODULE__{}, visit = %Visit{}) do
-    balance_changeset(user, %{
-      balance: total_after_fulfillment(user, visit)
-    })
-  end
-
-  @doc """
-  Given a user and a visit, this function returns the difference of the user's balance and the minutes associated with the visit
-  """
-  @spec total_after_debit(t(), Visit.t()) :: non_neg_integer()
-  def total_after_debit(user = %__MODULE__{}, visit = %Visit{}) do
-    user.balance - visit.minutes
-  end
-
-  @doc """
-  Given a user and a visit, this function returns the sub of the user's balance and a percentage of the minutes associated with the visit
-  """
-  @spec total_after_fulfillment(t(), Visit.t()) :: pos_integer()
-  def total_after_fulfillment(user = %__MODULE__{}, visit = %Visit{}) do
-    overhead_percent =
-      Application.fetch_env!(:visilitator, __MODULE__)
-      |> Keyword.fetch!(:fulfillment_overhead_percentage)
-
-    user.balance + trunc(visit.minutes - visit.minutes * overhead_percent)
   end
 end
