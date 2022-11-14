@@ -30,7 +30,7 @@ docker run --rm \
   -e DB_HOST=$(docker inspect -f "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}" pg) \
   -e DB_PASSWORD=pg \
   -e LOG_LEVEL=none \
-  ghcr.io/mwilsoncoding/visilitator/visilitator-builder:test-1.14.1-6ed7a7fdc0cc28fd950d1d4ba7eb6bae086876c0 mix test
+  ghcr.io/mwilsoncoding/visilitator/visilitator-builder:test-1.14.1-3bcc18149b87aec9bff8a644b004c04b9f7408e1 mix test
 ```
 - Run code in `iex` (using the `prod` image)
 ```console
@@ -39,7 +39,7 @@ docker run --rm \
   -e DB_HOST=$(docker inspect -f "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}" pg) \
   -e DB_PASSWORD=pg \
   -e ENABLE_BROADWAY=false \
-  ghcr.io/mwilsoncoding/visilitator/visilitator-builder:prod-1.14.1-6ed7a7fdc0cc28fd950d1d4ba7eb6bae086876c0 iex -S mix
+  ghcr.io/mwilsoncoding/visilitator/visilitator-builder:prod-1.14.1-3bcc18149b87aec9bff8a644b004c04b9f7408e1 iex -S mix
 ```
   - E.g.
   ```elixir
