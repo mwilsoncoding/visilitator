@@ -76,7 +76,7 @@ if config_env() == :test do
 
   config :visilitator, Visilitator.Application,
     enable_broadway:
-      System.get_env("ENABLE_BROADWAY", "true") |> String.downcase() |> String.to_existing_atom()
+      System.get_env("ENABLE_BROADWAY", "false") |> String.downcase() |> String.to_existing_atom()
 
   config :logger,
     backends: [:console],

@@ -24,6 +24,8 @@ The [gitignore](.gitignore) combined with the [compose file](.devcontainer/docke
 
 The devcontainer includes `psql` for convenience. The PostgreSQL serivce responds to the hostname, `pg`. Connection credentials can be found in the [dev environment configuration](https://www.docker.com/products/docker-desktop/).
 
+The RabbitMQ service includes an HTTP management endpoint that will be accessible at `localhost:15672` once VSCode is fully up. This interface can be used to create/delete queues, publish messages, etc.
+
 ### Usage
 
 From a terminal in the VSCode devcontainer, run:

@@ -38,7 +38,8 @@ defmodule Visilitator.User do
   end
 
   @doc """
-  Given user and minutes, this function updates storage for the User with the difference of the user's balance and the given minutes
+  Given a user and a visit, this function returns a changeset suitable for debiting the member's
+  balance of minutes
   """
   @spec debit(t(), Visit.t()) :: Ecto.Changeset.t()
   def debit(user = %__MODULE__{}, visit = %Visit{})
@@ -47,7 +48,8 @@ defmodule Visilitator.User do
   end
 
   @doc """
-  Given user and minutes, this function updates storage for the User with the sum of the user's balance and 85% of the given minutes
+  Given a user and a visit, this function returns a changeset suitable for crediting the pal's
+  balance of minutes with a percentage of the visit's minutes
   """
   @spec fulfill(t(), Visit.t()) :: Ecto.Changeset.t()
   def fulfill(user = %__MODULE__{}, visit = %Visit{}) do
@@ -57,7 +59,7 @@ defmodule Visilitator.User do
   end
 
   @doc """
-
+  Given a user and a visit, this function returns the difference of the user's balance and the minutes associated with the visit
   """
   @spec total_after_debit(t(), Visit.t()) :: non_neg_integer()
   def total_after_debit(user = %__MODULE__{}, visit = %Visit{}) do
@@ -65,7 +67,7 @@ defmodule Visilitator.User do
   end
 
   @doc """
-
+  Given a user and a visit, this function returns the sub of the user's balance and a percentage of the minutes associated with the visit
   """
   @spec total_after_fulfillment(t(), Visit.t()) :: pos_integer()
   def total_after_fulfillment(user = %__MODULE__{}, visit = %Visit{}) do

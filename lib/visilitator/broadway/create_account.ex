@@ -32,6 +32,12 @@ defmodule Visilitator.Broadway.CreateAccount do
     )
   end
 
+  @doc """
+  Async message ingestion for create_account.
+
+  Example JSON message:
+    {"first_name": "little", "last_name": "bobby", "email": "tables"}
+  """
   @impl true
   def handle_message(_, message, _) do
     %{"first_name" => first_name, "last_name" => last_name, "email" => email} =
