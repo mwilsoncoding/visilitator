@@ -20,12 +20,20 @@ RUN apk add --no-cache bash make gcc libc-dev git sudo
 # tooling may need for interacting with the host filesystem
 # $WORKSPACE is set in devcontainer.json
 ENV WORKSPACE /workspace
-ENV MIX_HOME $WORKSPACE/.mix
-ENV HEX_HOME $WORKSPACE/.hex
-ENV REBAR_CACHE_DIR $WORKSPACE/.cache
+ENV MIX_TMP /opt/tmp/.mix
+ENV HEX_TMP /opt/tmp/.hex
+ENV REBAR_CACHE_TMP /opt/tmp/.cache
+ENV MIX_HOME $MIX_TMP
+ENV HEX_HOME $HEX_TMP
+ENV REBAR_CACHE_DIR $REBAR_CACHE_TMP
 
 # Set an ENV to persist the app build env as development mode
 ENV MIX_ENV dev
+
+WORKDIR /opt/tmp
+COPY mix.exs .
+
+RUN mix do local.hex --force --if-missing, local.rebar --force --if-missing, deps.get --only ${MIX_ENV}
 
 # This Dockerfile adds a non-root user with sudo access. Use the "remoteUser"
 # property in devcontainer.json to use it. On Linux, the container user's GID/UIDs
@@ -38,7 +46,12 @@ ARG USER_GID=$USER_UID
 RUN addgroup -g $USER_GID $USERNAME \
     && adduser -s /bin/bash -u $USER_UID -G $USERNAME -h /home/$USERNAME -D $USERNAME \
     && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
-    && chmod 0440 /etc/sudoers.d/$USERNAME
+    && chmod 0440 /etc/sudoers.d/$USERNAME \
+    && chown -R $USERNAME /opt/tmp
+
+ENV MIX_HOME $WORKSPACE/.mix
+ENV HEX_HOME $WORKSPACE/.hex
+ENV REBAR_CACHE_DIR $WORKSPACE/.cache
 
 USER $USERNAME
 ENV HOME /home/$USERNAME
