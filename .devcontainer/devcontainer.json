@@ -3,11 +3,6 @@
 
   "dockerComposeFile": "docker-compose.yaml",
   "service": "dev",
-  "runServices": [
-      "dev",
-      "pg",
-      "rabbitmq"
-  ],
   "workspaceFolder": "/workspace",
   "shutdownAction": "stopCompose",
 
@@ -15,7 +10,14 @@
     "terminal.integrated.defaultProfile.linux": "bash"
   },
 
-  "forwardPorts": [],
+  // AMQP protocol port
+  // HTTP management UI
+  // Postgres
+  "forwardPorts": [
+      5672,
+      15672,
+      5432
+    ],
 
   // Install local package manager caches if missing (see above note re: COPY . $APP_DIR)
   // Get dependencies for the currently configured environment
