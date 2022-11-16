@@ -144,6 +144,24 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - run: |-
           docker container run ghcr.io/${{ github.repository }}/visilitator-builder:${{ matrix.build-env }}-${{ matrix.builder-base-image-vsn }}-${{ github.sha }} mix credo
+  audit:
+    runs-on: ubuntu-latest
+    needs: build
+    strategy:
+      matrix:
+        build-env:
+          - test
+        builder-base-image-vsn:
+          - 1.14.1
+    steps:
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - run: |-
+          docker container run ghcr.io/${{ github.repository }}/visilitator-builder:${{ matrix.build-env }}-${{ matrix.builder-base-image-vsn }}-${{ github.sha }} mix deps.audit
   unit-test:
     services:
       postgres:

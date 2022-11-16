@@ -41,7 +41,7 @@ ENV ELIXIR_VSN $ELIXIR_VSN
 COPY . $APP_DIR
 
 # Install OS build/test dependencies
-RUN apk add --no-cache yamllint
+RUN apk add --no-cache yamllint git
 
 WORKDIR $APP_DIR
 
