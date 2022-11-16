@@ -5,7 +5,7 @@ defmodule Visilitator.MixProject do
     [
       app: :visilitator,
       version: "0.1.0",
-      elixir: System.fetch_env!("ELIXIR_VSN"),
+      elixir: System.get_env("ELIXIR_VSN", "1.14.1"),
       start_permanent: Mix.env() == :prod,
       elixirc_paths: elixirc_paths(Mix.env()),
       deps: deps(),

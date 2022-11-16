@@ -3,6 +3,11 @@
 
   "dockerComposeFile": "docker-compose.yaml",
   "service": "dev",
+  "runServices": [
+      "dev",
+      "pg",
+      "rabbitmq"
+  ],
   "workspaceFolder": "/workspace",
   "shutdownAction": "stopCompose",
 
