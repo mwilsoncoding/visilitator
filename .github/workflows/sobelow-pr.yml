@@ -1,0 +1,18 @@
+name: Sobelow PR
+
+on:
+  pull_request:
+    branches: [ "main" ]
+permissions:
+  contents: read
+jobs:
+  security-scan:
+    permissions:
+      contents: read # for actions/checkout to fetch code
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3 
+      - id: run-action
+        uses: sobelow/action@v1
+        with:
+          flags: '--exit Low'
