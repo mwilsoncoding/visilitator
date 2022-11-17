@@ -7,6 +7,16 @@ The Visit Facilitator!
 From the prompt:
 > This application may be command-line or API-only. It does not require a graphical or web interface.
 
+### Codespaces
+
+This repository is compatible with GitHub Codespaces!
+
+- From the main page of the repository, select a branch to checkout.
+- Click the `Code` button and selecet the `Codespaces` tab in the dropdown.
+- Clitk the `+` button to create a new codespace on the selected branch.
+
+This will open VSCode in a new browser tab.
+
 ### VSCode
 
 VSCode setup and usage instructions are included in the [Contribution Guide](CONTRIBUTING.md)
