@@ -10,7 +10,9 @@ defmodule Visilitator.Application do
   def start(_type, _args) do
     children =
       [
-        Visilitator.Repo
+        Visilitator.Repo,
+        {K8sProbe,
+         port: Application.fetch_env!(:visilitator, __MODULE__) |> Keyword.fetch!(:k8s_probe_port)}
       ]
       |> (fn c ->
             if Application.fetch_env!(:visilitator, __MODULE__)

@@ -93,7 +93,9 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: ghcr.io/${{ github.repository }}/visilitator:${{ github.sha }}
+          tags: |
+            ghcr.io/${{ github.repository }}/visilitator:latest
+            ghcr.io/${{ github.repository }}/visilitator:${{ github.sha }}
           context: .
           build-args: |-
             BUILDER_REGISTRY=${{ env.BUILDER_BASE_IMAGE_REGISTRY }}

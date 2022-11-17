@@ -150,6 +150,8 @@ jobs:
         image: postgres:15-alpine
         env:
           POSTGRES_PASSWORD: pg
+          POSTGRES_USER: visilitator
+          POSTGRES_DB: visilitator
         options: >-
           --health-cmd pg_isready
           --health-interval 10s

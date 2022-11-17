@@ -43,7 +43,8 @@ defmodule Visilitator.MixProject do
       {:ecto_sql, "~> 3.9"},
       {:postgrex, "~> 0.16.5"},
       {:broadway_rabbitmq, "~> 0.7"},
-      {:json, "~> 1.4"}
+      {:json, "~> 1.4"},
+      {:k8s_probe, "~> 0.4.1"}
     ]
   end
 end

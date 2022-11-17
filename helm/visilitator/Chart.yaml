@@ -1,0 +1,18 @@
+apiVersion: v2
+appVersion: "0.1.0"
+description: A Helm chart for Kubernetes to install Visilitator
+name: visilitator
+version: 0.1.0
+maintainers:
+  - name: mwilsoncoding
+    email: visilitator@maxwilson.dev
+    url: https://github.com/mwilsoncoding/visilitator
+dependencies:
+  - name: postgresql
+    version: ~12.1.2
+    repository: "@bitnami"
+    condition: postgresql.enabled
+  - name: rabbitmq
+    version: ~11.1.2
+    repository: "@bitnami"
+    condition: rabbitmq.enabled
