@@ -11,7 +11,7 @@ RUN apk add --no-cache bash git sudo
 
 # Add any additional desired development tooling.
 # YAML
-RUN apk add --no-cache py3-pip yamllint postgresql-client
+RUN apk add --no-cache py3-pip yamllint postgresql-client nmap
 RUN pip install yamlfix
 # Elixir
 RUN apk add --no-cache bash make gcc libc-dev git sudo
