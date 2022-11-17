@@ -22,7 +22,7 @@ The [devcontainer JSON definition](.devcontainer/devcontainer.json) will install
 
 The [gitignore](.gitignore) combined with the [compose file](.devcontainer/docker-compose.yaml)'s use of a cached workspace result in preservation of the local filesystem for useful directories not tracked in git (i.e. `_build`, `.mix`, `.hex`, `deps`, etc).
 
-The devcontainer includes `psql` for convenience. The PostgreSQL serivce responds to the hostname, `postgres`. Connection credentials can be found in the [dev environment configuration](config/dev.exs).
+The devcontainer includes `psql` for convenience. The PostgreSQL serivce responds to the hostname, `pg`. Connection credentials can be found in the [dev environment configuration](config/dev.exs).
 
 The RabbitMQ service includes an HTTP management endpoint that will be accessible at [`localhost:15672`](localhost:15672) once VSCode is fully up. This interface can be used to create/delete queues, publish messages, etc.
 

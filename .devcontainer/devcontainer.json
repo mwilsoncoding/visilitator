@@ -3,10 +3,6 @@
 
   "dockerComposeFile": "docker-compose.yaml",
   "service": "dev",
-  "runServices": [
-    "postgres" // ,
-    // "rabbitmq"
-  ],
   "workspaceFolder": "/workspace",
   "shutdownAction": "stopCompose",
 
@@ -14,18 +10,12 @@
     "terminal.integrated.defaultProfile.linux": "bash"
   },
 
-  // AMQP protocol port
-  // HTTP management UI
-  // Postgres
-  "forwardPorts": [
-      // "rabbitmq:5672",
-      // "rabbitmq-web:15672",
-      "pg:5432"
-    ],
+  "forwardPorts": [],
 
   // Install local package manager caches if missing (see above note re: COPY . $APP_DIR)
   // Get dependencies for the currently configured environment
-  "postCreateCommand": "cp -rn /opt/tmp/.mix /opt/tmp/.hex /opt/tmp/* /workspace",
+  "postCreateCommand": "mix do local.hex --force --if-missing, local.rebar --force --if-missing, deps.get --only $MIX_ENV",
+
 
   "remoteUser": "dev",
 

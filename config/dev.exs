@@ -4,7 +4,7 @@ config :visilitator, Visilitator.Repo,
   username: "postgres",
   password: "pg",
   database: "visilitator",
-  hostname: "postgres",
+  hostname: "pg",
   # Comment out the pool if you want to rid yourself of ignorable postgrex connection issues in iex when MIX_ENV=dev
   pool: Ecto.Adapters.SQL.Sandbox
 
@@ -18,7 +18,7 @@ config :visilitator, :rabbitmq,
   host: "rabbitmq",
   producer: BroadwayRabbitMQ.Producer
 
-config :visilitator, Visilitator.Application, enable_broadway: false
+config :visilitator, Visilitator.Application, enable_broadway: true
 
 config :logger,
   backends: [:console],

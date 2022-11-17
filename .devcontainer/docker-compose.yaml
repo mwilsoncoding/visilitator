@@ -13,21 +13,30 @@ services:
     environment:
       - ELIXIR_VSN=1.14.1
     depends_on:
-      - postgres
-      # - rabbitmq
-  postgres:
-    container_name: "postgres"
+      - pg
+      - rabbitmq
+  pg:
+    container_name: "pg"
     environment:
       - POSTGRES_PASSWORD=pg
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
       - ../pgdata:/var/lib/postgresql/data/
     image: "postgres:15-alpine"
-  # rabbitmq:
-  #   container_name: "rabbitmq"
-  #   image: rabbitmq:3-management-alpine
-  #   environment:
-  #     - RABBITMQ_DEFAULT_USER=rmq
-  #     - RABBITMQ_DEFAULT_PASS=rmq
-  #   volumes:
-  #     - ../rabbitmq:/var/lib/rabbitmq/
+    restart: unless-stopped
+    ports:
+      # Postgres
+      - '5432:5432'
+  rabbitmq:
+    container_name: "rabbitmq"
+    image: rabbitmq:3-management-alpine
+    environment:
+      - RABBITMQ_DEFAULT_USER=rmq
+      - RABBITMQ_DEFAULT_PASS=rmq
+    volumes:
+      - ../rabbitmq:/var/lib/rabbitmq/
+    ports:
+      # AMQP protocol port
+      - '5672:5672'
+      # HTTP management UI
+      - '15672:15672'
