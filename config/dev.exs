@@ -4,7 +4,7 @@ config :visilitator, Visilitator.Repo,
   username: "postgres",
   password: "pg",
   database: "visilitator",
-  hostname: "pg",
+  hostname: "postgres",
   # Comment out the pool if you want to rid yourself of ignorable postgrex connection issues in iex when MIX_ENV=dev
   pool: Ecto.Adapters.SQL.Sandbox
 

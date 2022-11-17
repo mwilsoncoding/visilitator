@@ -12,9 +12,10 @@ services:
     environment:
       - ELIXIR_VSN=1.14.1
     depends_on:
-      - pg
+      - postgres
       - rabbitmq
-  pg:
+  postgres:
+    container_name: "postgres"
     environment:
       - POSTGRES_PASSWORD=pg
       - PGDATA=/var/lib/postgresql/data/pgdata

@@ -16,7 +16,7 @@ if config_env() == :prod do
     username: System.get_env("DB_USERNAME", "postgres"),
     password: System.fetch_env!("DB_PASSWORD"),
     database: System.get_env("DB_NAME", "visilitator"),
-    hostname: System.get_env("DB_HOST", "pg")
+    hostname: System.get_env("DB_HOST", "postgres")
 
   config :visilitator, Visilitator.Broadway.CreateAccount,
     queue: System.get_env("QUEUE_CREATE_ACCOUNT", "create_account")
