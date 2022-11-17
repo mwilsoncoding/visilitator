@@ -45,7 +45,36 @@ kubectl apply -f not-so-secret.yaml
 helm install visilitator helm/visilitator -n visilitator
 ```
 
-Once installed, port-forward RabbitMQ's management portal:
+Once installed, there are some options for interacting with the system:
+
+#### IEX
+
+```console
+% kubectl get pods -l app.kubernetes.io/name=visilitator -n visilitator
+NAME                           READY   STATUS    RESTARTS   AGE
+visilitator-5f7dcc784c-dknkv   1/1     Running   0          92s
+visilitator-5f7dcc784c-h7vhz   1/1     Running   0          92s
+visilitator-5f7dcc784c-nswj6   1/1     Running   0          92s
+% kubectl exec --stdin --tty -n visilitator visilitator-5f7dcc784c-h7vhz -c visilitator -- /opt/app/_build/bin/remote-iex
+Erlang/OTP 25 [erts-13.1.2] [source] [64-bit] [smp:8:8] [ds:8:8:10] [async-threads:1] [jit]
+
+Interactive Elixir (1.14.1) - press Ctrl+C to exit (type h() ENTER for help)
+iex(visilitator@visilitator-5f7dcc784c-h7vhz)1> Visilitator.create_account("little", "bobby", "tables")
+%Visilitator.User{
+  __meta__: #Ecto.Schema.Metadata<:loaded, "users">,
+  id: 1,
+  first_name: "little",
+  last_name: "bobby",
+  email: "tables",
+  balance: 100
+}
+iex(visilitator@visilitator-5f7dcc784c-h7vhz)2> 
+18:08:34.269 [info] Created user with id: 1
+```
+
+#### Message Queue
+
+Port-forward RabbitMQ's management portal:
 ```console
 kubectl port-forward svc/visilitator-rabbitmq -n visilitator 15672:15672
 ```
