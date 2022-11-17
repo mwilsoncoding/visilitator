@@ -10,7 +10,9 @@
     "terminal.integrated.defaultProfile.linux": "bash"
   },
 
-  "forwardPorts": [],
+  "forwardPorts": [
+    "rabbitmq:15672"
+  ],
 
   // Install local package manager caches if missing (see above note re: COPY . $APP_DIR)
   // Get dependencies for the currently configured environment

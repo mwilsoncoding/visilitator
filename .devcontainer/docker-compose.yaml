@@ -1,6 +1,7 @@
 ---
 services:
   dev:
+    container_name: "dev"
     volumes:
       - ..:/workspace:cached
     command: /bin/bash
@@ -15,12 +16,17 @@ services:
       - pg
       - rabbitmq
   pg:
+    container_name: "pg"
     environment:
       - POSTGRES_PASSWORD=pg
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
       - ../pgdata:/var/lib/postgresql/data/
     image: "postgres:15-alpine"
+    restart: unless-stopped
+    ports:
+      # Postgres
+      - '5432:5432'
   rabbitmq:
     container_name: "rabbitmq"
     image: rabbitmq:3-management-alpine
