@@ -1,6 +1,7 @@
 ---
 services:
   dev:
+    container_name: "dev"
     volumes:
       - ..:/workspace:cached
     command: /bin/bash
@@ -13,7 +14,7 @@ services:
       - ELIXIR_VSN=1.14.1
     depends_on:
       - postgres
-      - rabbitmq
+      # - rabbitmq
   postgres:
     container_name: "postgres"
     environment:
@@ -22,11 +23,11 @@ services:
     volumes:
       - ../pgdata:/var/lib/postgresql/data/
     image: "postgres:15-alpine"
-  rabbitmq:
-    container_name: "rabbitmq"
-    image: rabbitmq:3-management-alpine
-    environment:
-      - RABBITMQ_DEFAULT_USER=rmq
-      - RABBITMQ_DEFAULT_PASS=rmq
-    volumes:
-      - ../rabbitmq:/var/lib/rabbitmq/
+  # rabbitmq:
+  #   container_name: "rabbitmq"
+  #   image: rabbitmq:3-management-alpine
+  #   environment:
+  #     - RABBITMQ_DEFAULT_USER=rmq
+  #     - RABBITMQ_DEFAULT_PASS=rmq
+  #   volumes:
+  #     - ../rabbitmq:/var/lib/rabbitmq/

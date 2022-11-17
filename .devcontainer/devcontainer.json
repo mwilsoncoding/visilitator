@@ -4,8 +4,8 @@
   "dockerComposeFile": "docker-compose.yaml",
   "service": "dev",
   "runServices": [
-    "postgres",
-    "rabbitmq"
+    "postgres" // ,
+    // "rabbitmq"
   ],
   "workspaceFolder": "/workspace",
   "shutdownAction": "stopCompose",
@@ -18,8 +18,8 @@
   // HTTP management UI
   // Postgres
   "forwardPorts": [
-      "rabbitmq:5672",
-      "rabbitmq-web:15672",
+      // "rabbitmq:5672",
+      // "rabbitmq-web:15672",
       "pg:5432"
     ],
 

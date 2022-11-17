@@ -18,7 +18,7 @@ config :visilitator, :rabbitmq,
   host: "rabbitmq",
   producer: BroadwayRabbitMQ.Producer
 
-config :visilitator, Visilitator.Application, enable_broadway: true
+config :visilitator, Visilitator.Application, enable_broadway: false
 
 config :logger,
   backends: [:console],
