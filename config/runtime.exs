@@ -13,7 +13,7 @@ if config_env() == :prod do
     fulfillment_overhead_percentage: parsed_fulfillment_overhead_percentage
 
   config :visilitator, Visilitator.Repo,
-    username: System.get_env("DB_USERNAME", "postgres"),
+    username: System.get_env("DB_USERNAME", "visilitator"),
     password: System.fetch_env!("DB_PASSWORD"),
     database: System.get_env("DB_NAME", "visilitator"),
     hostname: System.get_env("DB_HOST", "pg")
@@ -42,18 +42,27 @@ if config_env() == :prod do
 
   config :visilitator, :rabbitmq,
     host: System.get_env("RABBITMQ_HOST", "rabbitmq"),
-    username: System.get_env("RABBITMQ_USERNAME", "rmq"),
+    username: System.get_env("RABBITMQ_USERNAME", "user"),
     password: rabbitmq_pass,
     producer: BroadwayRabbitMQ.Producer
 
   config :logger,
     backends: [:console],
     level: System.get_env("LOG_LEVEL", "info") |> String.downcase() |> String.to_existing_atom()
+
+  default_seeds_file = "/opt/app/_build/seeds.exs"
+
+  config :visilitator, seeds_file: System.get_env("SEEDS_FILE", default_seeds_file)
+
+  default_k8s_probe_port = "9090"
+
+  config :visilitator, Visilitator.Application,
+    k8s_probe_port: String.to_integer(System.get_env("PROBE_PORT", default_k8s_probe_port))
 end
 
 if config_env() == :test do
   config :visilitator, Visilitator.Repo,
-    username: System.get_env("DB_USERNAME", "postgres"),
+    username: System.get_env("DB_USERNAME", "visilitator"),
     password: System.get_env("DB_PASSWORD", "pg"),
     database: System.get_env("DB_NAME", "visilitator"),
     hostname: System.get_env("DB_HOST", "localhost"),
@@ -70,7 +79,7 @@ if config_env() == :test do
 
   config :visilitator, :rabbitmq,
     host: System.get_env("RABBITMQ_HOST", "rabbitmq"),
-    username: System.get_env("RABBITMQ_USERNAME", "rmq"),
+    username: System.get_env("RABBITMQ_USERNAME", "user"),
     password: System.get_env("RABBITMQ_PASSWORD", "rmq"),
     producer: Broadway.DummyProducer
 

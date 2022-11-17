@@ -11,6 +11,71 @@ From the prompt:
 
 VSCode setup and usage instructions are included in the [Contribution Guide](CONTRIBUTING.md)
 
+### Kubernetes
+
+This repo includes a [helm chart](helm/visilitator/Chart.yaml).
+
+It has been tested using the local kubernetes cluster feature of Docker Desktop.
+
+Requires Docker Desktop, kubectl, and helm. Optionally psql for db inspection.
+
+With Docker Desktop running and the k8s engine running:
+```console
+git clone https://github.com/mwilsoncoding/visilitator.git
+cd visilitator
+unset KUBECONFIG
+# Create a secret in the cluster (the chart doesn't provide one).
+# This is for demo purposes only.
+# A proper secrets management like SOPS or SealedSecrets is encouraged.
+cat <<EOF > not-so-secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: visilitator
+  namespace: visilitator
+stringData:
+  db-password: pg
+  rabbitmq-password: rmq
+  postgres-password: pg
+  password: pg
+  RABBITMQ_PASSWORD: rmq
+EOF
+kubectl create ns visilitator
+kubectl apply -f not-so-secret.yaml
+helm install visilitator . -n visilitator
+```
+
+Once installed, port-forward RabbitMQ's management portal:
+```console
+kubectl port-forward svc/visilitator-rabbitmq -n visilitator 15672:15672
+```
+
+Navigate to [`localhost:15672/#/queues/%2F/create_account`](localhost:15672/#/queues/%2F/create_account) and log into the management portal using your configured password. The user name is `user` by default.
+
+Click the `Publish message` dropdown to access a form.
+
+Enter the desired Payload and click the `Publish message` button to submit the form.
+
+Here is an example of a valid JSON message for the `create_account` queue:
+```json
+{"first_name": "little", "last_name": "bobby", "email": "tables"}
+```
+
+The system doesn't have much of a UI, but logs can be inspected:
+```console
+kubectl logs -l app.kubernetes.io/name=visilitator -n visilitator -c visilitator
+```
+
+Postgres can also be queried by port-forwarding its headless service:
+```console
+kubectl port-forward svc/visilitator-postgresql-hl -n visilitator 5432:5432
+```
+
+Followed by connecting from a local psql client from another terminal:
+```console
+psql -h 127.0.0.1 -U visilitator
+```
+
 ### Docker
 
 If you have `docker` installed, the quickest way to test/interact with this code is to run one of the images published to the GitHub Container Registry:

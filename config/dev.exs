@@ -1,7 +1,7 @@
 import Config
 
 config :visilitator, Visilitator.Repo,
-  username: "postgres",
+  username: "visilitator",
   password: "pg",
   database: "visilitator",
   hostname: "pg",
@@ -13,7 +13,7 @@ config :visilitator, Visilitator.Broadway.RequestVisit, queue: "request_visit"
 config :visilitator, Visilitator.Broadway.FulfillVisit, queue: "fulfill_visit"
 
 config :visilitator, :rabbitmq,
-  username: "rmq",
+  username: "user",
   password: "rmq",
   host: "rabbitmq",
   producer: BroadwayRabbitMQ.Producer

@@ -1,0 +1,63 @@
+image:
+  registry: ghcr.io
+  repository: mwilsoncoding/visilitator/visilitator
+  tag: latest
+  pullPolicy: IfNotPresent
+postgresql:
+  enabled: true
+  image:
+    tag: 15
+  auth:
+    username: visilitator
+    database: visilitator
+    existingSecret: visilitator
+  architecture: standalone
+  primary:
+    name: primary
+    persistence:
+      enabled: true
+    service:
+      ports:
+        postgresql: 5432
+    podSecurityContext:
+      enabled: true
+      fsGroup: 1001
+    containerSecurityContext:
+      enabled: true
+      runAsUser: 1001
+    affinity: {}
+    nodeSelector: {}
+  volumePermissions:
+    enabled: false
+    containerSecurityContext:
+      runAsUser: 1001
+  shmVolume:
+    chmod:
+      enabled: false
+rabbitmq:
+  enabled: true
+  image:
+    tag: 3.11
+  replicaCount: 1
+  auth:
+    existingPasswordSecret: visilitator
+  memoryHighWatermark:
+    enabled: true
+    type: relative
+    value: 0.5
+  affinity: {}
+  nodeSelector: {}
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  podSecurityContext:
+    enabled: true
+    fsGroup: 1001
+  containerSecurityContext:
+    enabled: true
+    runAsUser: 1001
+    runAsNonRoot: true

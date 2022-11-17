@@ -7,3 +7,4 @@ SECURITY.md
 .github
 pgdata
 rabbitmq
+helm

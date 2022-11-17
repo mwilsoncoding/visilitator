@@ -74,12 +74,11 @@ ARG MIX_ENV
 # Copy from the built directory into the runner stage at the same directory
 ARG BUILD_DIR=$APP_DIR/_build
 WORKDIR $BUILD_DIR
-COPY --from=builder $BUILD_DIR .
+COPY --from=builder $BUILD_DIR/$MIX_ENV/rel/$OTP_APP .
+COPY --from=builder /opt/app/priv/repo/seeds.exs .
 
 # Preserve the deploy environment in an ENV if necessary
 ENV MIX_ENV $MIX_ENV
 
-WORKDIR $BUILD_DIR/$MIX_ENV/rel/$OTP_APP/bin
-
 # Use CMD to allow overrides when invoked via `docker container run`
-CMD ["./visilitator","start"]
+CMD [ "./bin/server" ]
