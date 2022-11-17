@@ -42,7 +42,7 @@ stringData:
 EOF
 kubectl create ns visilitator
 kubectl apply -f not-so-secret.yaml
-helm install visilitator . -n visilitator
+helm install visilitator helm/visilitator -n visilitator
 ```
 
 Once installed, port-forward RabbitMQ's management portal:
