@@ -1,0 +1,14 @@
+version: 2
+updates:
+  - package-ecosystem: "mix"
+    directory: "/" # Location of package manifests
+    schedule:
+      interval: "weekly"
+    assignees:
+      - "mwilsoncoding"
+  - package-ecosystem: "docker"
+    directory: "/" # Location of package manifests
+    schedule:
+      interval: "weekly"
+    assignees:
+      - "mwilsoncoding"
